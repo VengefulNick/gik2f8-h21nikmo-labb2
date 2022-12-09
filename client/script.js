@@ -76,6 +76,9 @@ function saveTask(){
     .then((task) => {
         if (task) {
             renderList();
+            todoForm.title.value = '';
+            todoForm.description.value = '';
+            todoForm.dueDate.value = '';
         }
     });
 }
@@ -84,6 +87,8 @@ function renderList() {
     console.log('Rendering List');
     api.getAll().then((tasks) => {
         todoListElement.innerHTML = '';
+        //console.log(tasks);
+        sortTodo(tasks);
         if (tasks && tasks.length > 0) {
             tasks.forEach((task) => {
                 todoListElement.insertAdjacentHTML('beforeend', renderTask(task));
@@ -111,10 +116,26 @@ function renderTask({id, title, description, dueDate}) {
 }
 
 function removeTask(id) {
-    console.log("Delete buttonpress")
+    console.log("Delete buttonpress");
     api.remove(id).then((result) => {
         renderList();
     });
+}
+
+function sortTodo(tasks) {
+  console.log("Sorting");
+  
+  tasks.sort((a, b) => {
+    if (a.dueDate < b.dueDate){
+      return -1;
+    }
+    else if (a.dueDate > b.dueDate){
+      return 1;
+    }
+    else {
+      return 0;
+    }
+  });
 }
 
 renderList();
