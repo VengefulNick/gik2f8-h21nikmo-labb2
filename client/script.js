@@ -102,7 +102,7 @@ function renderList() {
 
 function renderTask({id, title, description, dueDate, completed}) {
     let html = `
-    <li id="${id}" class="select-none mt-2 py-2 border-b border-yellow-600;`
+    <li id="${id}" class="select-none my-2 py-2 border-b border-yellow-600;`
     completed && (html += ` bg-black/20`);
     html +=`">
         <div class="flex items-center">

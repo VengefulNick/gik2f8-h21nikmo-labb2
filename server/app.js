@@ -59,14 +59,10 @@ app.put('/tasks/:id', async (req, res) => {
 
     currentTasks.forEach (task => {
       if (task.id == id && task.completed == false){
-        console.log(task)
         task.completed = true;
-        console.log(task)
       }
       else if (task.id == id && task.completed == true) {
-        console.log(task)
         task.completed = false;
-        console.log(task)
       }
     });
     await fs.writeFile("./tasks.json", JSON.stringify(currentTasks));
