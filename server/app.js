@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 const fs = require("fs/promises");
-
+//const listBuffer = await fs.readFile('./tasks.json');
+//const currentTasks = JSON.parse(listBuffer);
 const PORT = 5000;
 
 app
@@ -31,7 +32,7 @@ app.post("/tasks", async (req, res) => {
     const task = req.body;
     const listBuffer = await fs.readFile("./tasks.json");
     const currentTasks = JSON.parse(listBuffer);
-    let maxTaskId = 1;
+    let maxTaskId = 0;
     if (currentTasks && currentTasks.length > 0) {
       maxTaskId = currentTasks.reduce(
         (maxId, currentElement) =>
@@ -49,9 +50,35 @@ app.post("/tasks", async (req, res) => {
   }
 });
 
+// UPDATE ANROP
+app.put('/tasks/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const listBuffer = await fs.readFile('./tasks.json');
+    const currentTasks = JSON.parse(listBuffer);
+
+    currentTasks.forEach (task => {
+      if (task.id == id && task.completed == false){
+        console.log(task)
+        task.completed = true;
+        console.log(task)
+      }
+      else if (task.id == id && task.completed == true) {
+        console.log(task)
+        task.completed = false;
+        console.log(task)
+      }
+    });
+    await fs.writeFile("./tasks.json", JSON.stringify(currentTasks));
+    res.send({ message : `Uppgift med ${id} uppdaterad`})
+  }
+  catch (error) {
+    res.status(500).send({ error: error.stack });
+  }
+});
+
 // DELETE ANROP
 app.delete('/tasks/:id', async (req, res) => {
-  console.log(req);
   try {
     const id = req.params.id;
     const listBuffer = await fs.readFile('./tasks.json');
@@ -66,6 +93,7 @@ app.delete('/tasks/:id', async (req, res) => {
     res.status(500).send({ error: error.stack });
   }
 });
+
 
 app.listen(PORT, () =>
   console.log('Server running on http://localhost:5000')

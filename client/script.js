@@ -76,11 +76,12 @@ function saveTask(){
     .then((task) => {
         if (task) {
             renderList();
-            todoForm.title.value = '';
-            todoForm.description.value = '';
-            todoForm.dueDate.value = '';
         }
     });
+    // Clears input fields after submit
+    todoForm.title.value = '';
+    todoForm.description.value = '';
+    todoForm.dueDate.value = '';
 }
 
 function renderList() {
@@ -88,26 +89,33 @@ function renderList() {
     api.getAll().then((tasks) => {
         todoListElement.innerHTML = '';
         //console.log(tasks);
-        sortTodo(tasks);
+        
         if (tasks && tasks.length > 0) {
+          sortDueDate(tasks);
+          sortComplete(tasks);
             tasks.forEach((task) => {
-                todoListElement.insertAdjacentHTML('beforeend', renderTask(task));
+              todoListElement.insertAdjacentHTML('beforeend', renderTask(task));
             });
         }
     });
 }
 
-function renderTask({id, title, description, dueDate}) {
+function renderTask({id, title, description, dueDate, completed}) {
     let html = `
-    <li class="select-none mt-2 py-2 border-b border-yellow-600">
+    <li id="${id}" class="select-none mt-2 py-2 border-b border-yellow-600;`
+    completed && (html += ` bg-black/20`);
+    html +=`">
         <div class="flex items-center">
-            <input type="checkbox" class="accent-yellow-400/50 mr-2">
+            <input type="checkbox" value="${id}" class="accent-yellow-400/50 mr-2" onclick="updateTask(this)"`;
+            completed && (html += `checked`);
+            html +=`>
             <h3 class="mb-3 flex-1 text-xl font-bold text-emerald-400 uppercase">${title}</h3>
             <div>
                 <span>${dueDate}</span>
                 <button onclick="removeTask(${id})" class="inline-block bg-cyan-500 border border-white px-5 py-2 ml-2 rounded-xl hover:bg-red-700">DELETE</button>
             </div>
-        </div>`;
+        </div>
+        `;
     description && (html += `<p class="ml-8 mt-2 text-xs italic">${description}</p>`);
     
     html += `</li>`;
@@ -116,15 +124,20 @@ function renderTask({id, title, description, dueDate}) {
 }
 
 function removeTask(id) {
-    console.log("Delete buttonpress");
-    api.remove(id).then((result) => {
-        renderList();
-    });
+  api.remove(id).then((result) => {
+      renderList();
+  });
 }
 
-function sortTodo(tasks) {
-  console.log("Sorting");
+function updateTask(e) {
+  api.update(e.value).then((result) => {
+    renderList()
+  });
   
+}
+
+function sortDueDate(tasks) {
+  // Sort Array by date  
   tasks.sort((a, b) => {
     if (a.dueDate < b.dueDate){
       return -1;
@@ -136,6 +149,18 @@ function sortTodo(tasks) {
       return 0;
     }
   });
+}
+
+function sortComplete(tasks) {
+  // Sort Array by completion
+  tasks.sort((a, b) => {
+    if (a.completed < b.completed){
+      return -1;
+    }
+    else if (a.completed > b.completed){
+      return 1;
+    }
+  })
 }
 
 renderList();

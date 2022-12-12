@@ -31,9 +31,20 @@ class Api {
             .catch((err) => console.log(err));
     }
 
+    // Update / PUT
+    update(id) {
+        console.log(`Updating task with id ${id}`);
+
+        return fetch(`${this.url}/${id}`, {
+            method: 'PUT'
+        })
+            .then((result) => result)
+            .catch((err) => console.log(err));
+    }
+
     // Delete / DELETE
     remove(id) {
-        //console.log(`Removing task with id ${id}`);
+        console.log(`Removing task with id ${id}`);
     
         return fetch(`${this.url}/${id}`, {
           method: 'DELETE'
