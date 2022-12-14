@@ -101,25 +101,22 @@ function renderList() {
 }
 
 function renderTask({id, title, description, dueDate, completed}) {
+    const taskStatus = completed == true ? "checked" : "";
+    const taskDone = completed == true ? "bg-black/20" : "";
+
     let html = `
-    <li id="${id}" class="select-none my-2 py-2 border-b border-yellow-600;`
-    completed && (html += ` bg-black/20`);
-    html +=`">
+    <li class="select-none my-2 py-2 border-b border-yellow-600 ${taskDone}">
         <div class="flex items-center">
-            <input type="checkbox" value="${id}" class="accent-yellow-400/50 mr-2" onclick="updateTask(this)"`;
-            completed && (html += `checked`);
-            html +=`>
-            <h3 class="mb-3 flex-1 text-xl font-bold text-emerald-400 uppercase">${title}</h3>
+            <input type="checkbox" value="${id}" class="accent-yellow-400/50 mr-2" onclick="updateTask(this)" ${taskStatus}>
+            <h3 class="mb-3 flex-1 text-xl font-bold text-emerald-300 uppercase">${title}</h3>
             <div>
                 <span>${dueDate}</span>
                 <button onclick="removeTask(${id})" class="inline-block bg-cyan-500 border border-white px-5 py-2 ml-2 rounded-xl hover:bg-red-700">DELETE</button>
             </div>
         </div>
         `;
-    description && (html += `<p class="ml-8 mt-2 text-xs italic">${description}</p>`);
-    
+    description && (html += `<p class="ml-8 mt-2 text-xs italic text-yellow-300">${description}</p>`);
     html += `</li>`;
-
     return html;
 }
 
@@ -133,7 +130,6 @@ function updateTask(e) {
   api.update(e.value).then((result) => {
     renderList()
   });
-  
 }
 
 function sortDueDate(tasks) {
