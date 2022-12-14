@@ -102,16 +102,16 @@ function renderList() {
 
 function renderTask({id, title, description, dueDate, completed}) {
     const taskStatus = completed == true ? "checked" : "";
-    const taskDone = completed == true ? "bg-black/20" : "";
+    const taskDone = completed == true ? "bg-black/30 border-red-700 border-y" : "";
 
     let html = `
-    <li class="select-none my-2 py-2 border-b border-yellow-600 ${taskDone}">
+    <li class="select-none my-2 py-2 border-y border-yellow-600 ${taskDone}">
         <div class="flex items-center">
-            <input type="checkbox" value="${id}" class="accent-yellow-400/50 mr-2" onclick="updateTask(this)" ${taskStatus}>
+            <input type="checkbox" value="${id}" class="accent-yellow-400/50 mx-2" onclick="updateTask(this)" ${taskStatus}>
             <h3 class="mb-3 flex-1 text-xl font-bold text-emerald-300 uppercase">${title}</h3>
             <div>
                 <span>${dueDate}</span>
-                <button onclick="removeTask(${id})" class="inline-block bg-cyan-500 border border-white px-5 py-2 ml-2 rounded-xl hover:bg-red-700">DELETE</button>
+                <button onclick="removeTask(${id})" class="inline-block bg-cyan-500 border border-white px-5 py-2 mx-2 rounded-xl hover:bg-red-700">DELETE</button>
             </div>
         </div>
         `;
@@ -156,7 +156,7 @@ function sortComplete(tasks) {
     else if (a.completed > b.completed){
       return 1;
     }
-  })
+  });
 }
 
 renderList();
